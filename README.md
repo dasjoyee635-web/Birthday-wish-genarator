@@ -14,5 +14,6 @@ and then see a **Happy Birthday** message with music and applause.
 - Responsive (works on mobile and desktop)
 
 ## 🚀 Live Demo
+https://dasjoyee635-web.github.io/Birthday-wish-genarator/
 
 
