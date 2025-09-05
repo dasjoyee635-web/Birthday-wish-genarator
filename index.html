@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Birthday Wish 🎂</title>
+  <style>
+    :root{ --bg:#0f1020; --card:#17182e; --text:#eef2ff; --muted:#bfc6ff; --accent:#7c5cff; --good:#2dd4bf; --pink:#ff7db6; --yellow:#ffd166; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Helvetica,Arial,sans-serif;background:radial-gradient(1200px 800px at 80% -10%,#1b1c35 0,#0f1020 60%),radial-gradient(800px 800px at -10% 120%,#1a1233 0,#0f1020 60%);color:var(--text);}
+    .center{min-height:100dvh;display:grid;place-items:center;padding:24px}
+    .card{width:min(900px,100%);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:28px;box-shadow:0 30px 80px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06);padding:28px}
+    h1{font-size:clamp(28px,5vw,42px);margin:0 0 8px 0}
+    p{color:var(--muted);margin:0 0 16px}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    input[type="text"]{flex:1;min-width:230px;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:#0f1126;color:#fff;font-size:16px;outline:none}
+    button{appearance:none;border:0;border-radius:14px;background:linear-gradient(135deg,var(--accent),#5d3bff);color:white;padding:14px 18px;font-weight:700;cursor:pointer;box-shadow:0 10px 24px rgba(92,68,255,.35)}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,.18);box-shadow:none;color:var(--text)}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    .hide{display:none}
+    .dots{display:flex;gap:8px;margin-top:10px}
+    .dot{width:8px;height:8px;border-radius:999px;background:rgba(255,255,255,.2)}
+    .dot.active{background:var(--good)}
+    .stage{display:grid;place-items:center;padding:32px}
+    .cake-wrap{position:relative; width:260px; height:260px}
+    .plate{position:absolute;inset:auto 0 0 0;margin:auto;width:260px;height:24px;background:linear-gradient(#9ca3af,#6b7280);border-radius:999px;filter:blur(.3px)}
+    .cake{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:220px;height:140px;border-radius:24px;background:linear-gradient(#ffb4d1,#ff8bb9);box-shadow:inset 0 -8px 0 rgba(0,0,0,.08)}
+    .cake:before{content:"";position:absolute;inset:0;border-radius:24px;background:repeating-linear-gradient( 120deg, rgba(255,255,255,.35) 0 12px, rgba(255,255,255,.12) 12px 24px );mix-blend-mode:overlay}
+    .icing{position:absolute;left:50%;top:38%;transform:translateX(-50%);width:240px;height:90px;border-radius:26px;background:linear-gradient(#fff,#ffe3f0);box-shadow:0 10px 20px rgba(0,0,0,.15)}
+    .candle{position:absolute;left:50%;top:20%;transform:translateX(-50%);width:22px;height:80px;background:repeating-linear-gradient(90deg,#fff 0 8px,#ffd1dc 8px 16px);border-radius:7px;box-shadow:inset 0 -2px 0 rgba(0,0,0,.12)}
+    .wick{position:absolute;left:50%;top:-6px;transform:translateX(-50%);width:2px;height:10px;background:#333;border-radius:2px}
+    .flame{position:absolute;left:50%;top:-28px;transform:translateX(-50%);width:18px;height:28px;background:radial-gradient( 10px 14px at 50% 70%, #fff7b1 20%, #ffd166 60%, #ff8c00 100% );border-radius:50% 50% 50% 50%/60% 60% 40% 40%;filter:drop-shadow(0 0 12px #ffb703);animation:flicker .12s infinite alternate}
+    @keyframes flicker{from{transform:translateX(-50%) scale(1) rotate(-2deg)} to{transform:translateX(-50%) scale(1.05) rotate(2deg)}}
+    .smoke{position:absolute;left:50%;top:-30px;transform:translateX(-50%);pointer-events:none}
+    .puff{position:absolute;width:8px;height:8px;border-radius:50%;background:rgba(200,200,220,.9);filter:blur(0.4px);animation:rise 1.8s ease-out forwards;opacity:0}
+    @keyframes rise{0%{opacity:0; transform:translate(-50%,0) scale(.6)} 10%{opacity:1} 100%{opacity:0; transform:translate(-50%,-90px) scale(1.6)}}
+    .big{font-size:clamp(22px,4.6vw,34px);font-weight:800;letter-spacing:.3px}
+    .hint{font-size:14px;color:#cbd5e1}
+    .wish{display:grid;place-items:center;text-align:center;padding:30px}
+    .wish h2{font-size:clamp(34px,7vw,64px);margin:0 0 10px}
+    .wish p{font-size:clamp(16px,3.2vw,22px)}
+    canvas#confetti{position:fixed;inset:0;pointer-events:none}
+    .footerNote{margin-top:10px;font-size:12px;color:#9aa0ff}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
+</head>
+<body>
+  <canvas id="confetti"></canvas>
+  <main id="app" class="center">
+    <!-- STEP 1: NAME INPUT -->
+    <section id="step1" class="card">
+      <h1>🎉 Birthday Wish Website</h1>
+      <p>Type the birthday person's name and press <strong>Start</strong>.</p>
+      <div class="row" style="margin-top:10px">
+        <label for="name" class="sr-only">Name</label>
+        <input id="name" type="text" placeholder="Name (e.g. Riya)" />
+        <button id="start">Start ➜</button>
+      </div>
+      <div class="dots" aria-hidden="true">
+        <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+    </section>
+
+    <!-- STEP 2: CAKE + BLOW -->
+    <section id="step2" class="card hide" aria-live="polite">
+      <div class="stage">
+        <div class="cake-wrap">
+          <div class="plate"></div>
+          <div class="cake">
+            <div class="icing"></div>
+            <div class="candle" id="candle">
+              <div class="wick"></div>
+              <div class="flame" id="flame" role="img" aria-label="Candle flame"></div>
+              <div class="smoke" id="smoke"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <div class="big" id="promptText">Blow into the mic or say <em>“fuu”</em> 🔊</div>
+        <p class="hint">(Allow mic permission. Or tap the button below.)</p>
+        <div class="row" style="justify-content:center;margin-top:14px">
+          <button id="enableMic">🎙️ Enable Mic</button>
+          <button id="manualBlow" class="ghost">Tap to blow out</button>
+        </div>
+      </div>
+      <div class="dots" aria-hidden="true">
+        <div class="dot"></div><div class="dot active"></div><div class="dot"></div>
+      </div>
+    </section>
+
+    <!-- STEP 3: WISH -->
+    <section id="step3" class="card hide">
+      <div class="wish">
+        <h2 id="wishTitle">Happy Birthday! 🎂</h2>
+        <p id="wishMsg">Wishing you a day filled with love, laughter, and cake! 💖</p>
+        <div class="row" style="justify-content:center;margin-top:18px">
+          <button id="replay" class="ghost">Replay</button>
+          <button id="shareBtn">Share / Copy Link</button>
+          <button id="soundBtn" class="ghost hide">🔈 Tap to play sound</button>
+        </div>
+      </div>
+      <div class="dots" aria-hidden="true">
+        <div class="dot"></div><div class="dot"></div><div class="dot active"></div>
+      </div>
+      <div class="footerNote">Made with ❤️ for birthdays</div>
+    </section>
+  </main>
+
+  <!-- AUDIO FILES (place your mp3/wav files in the same folder) -->
+  <audio id="birthdaySong" src="happy-birthday.mp3" preload="auto"></audio>
+  <audio id="clapSound" src="clap.mp3" preload="auto"></audio>
+
+  <script>
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    const startBtn = document.getElementById('start');
+    const nameInput = document.getElementById('name');
+    const enableMic = document.getElementById('enableMic');
+    const manualBlow = document.getElementById('manualBlow');
+    const wishTitle = document.getElementById('wishTitle');
+    const wishMsg = document.getElementById('wishMsg');
+
+    const flame = document.getElementById('flame');
+    const smoke = document.getElementById('smoke');
+
+    // Audio refs
+    const songEl = document.getElementById('birthdaySong');
+    const clapEl = document.getElementById('clapSound');
+    const soundBtn = document.getElementById('soundBtn');
+
+    let personName = '';
+    let blown = false;
+    let audioStream, audioCtx, analyser, dataArray, rafId;
+
+    function show(step){ [step1,step2,step3].forEach(s=>s.classList.add('hide')); step.classList.remove('hide'); }
+
+    // STEP 1 → STEP 2
+    startBtn.addEventListener('click', ()=>{ personName = nameInput.value.trim() || 'Friend'; show(step2); });
+    nameInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') startBtn.click(); });
+
+    // Mic setup and blow detection (simple loudness threshold)
+    async function startMic(){
+      try{
+        enableMic.disabled = true;
+        const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+        audioStream = stream;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioCtx.createMediaStreamSource(stream);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 512;
+        dataArray = new Uint8Array(analyser.frequencyBinCount);
+        source.connect(analyser);
+        detect();
+        document.getElementById('promptText').textContent = 'Listening… blow gently 🎙️';
+      }catch(err){
+        console.error(err);
+        enableMic.disabled = false;
+        alert('Mic permission not granted. You can tap the button to blow out.');
+      }
+    }
+
+    function detect(){
+      if(blown) return;
+      analyser.getByteTimeDomainData(dataArray);
+      let sum = 0;
+      for(let i=0;i<dataArray.length;i++){
+        const v = (dataArray[i]-128)/128; // -1..1
+        sum += v*v;
+      }
+      const rms = Math.sqrt(sum / dataArray.length); // 0..~1
+      if(rms > 0.10){ // blow or loud "fuu"
+        blowOut();
+        return;
+      }
+      rafId = requestAnimationFrame(detect);
+    }
+
+    function stopMic(){
+      if(rafId) cancelAnimationFrame(rafId);
+      if(audioStream){ audioStream.getTracks().forEach(t=>t.stop()); }
+      if(audioCtx){ audioCtx.close(); }
+    }
+
+    // Play sounds with autoplay fallback
+    async function tryPlay(a){ try{ await a.play(); return true; } catch(e){ return false; } }
+    async function startSounds(){
+      soundBtn.classList.add('hide');
+      // Set volumes (0.0 - 1.0)
+      songEl.volume = 0.85;
+      clapEl.volume = 0.95;
+      songEl.currentTime = 0;
+      const ok = await tryPlay(songEl);
+      setTimeout(()=>{ clapEl.currentTime = 0; tryPlay(clapEl); }, 900);
+      if(!ok){
+        // Autoplay blocked – ask user to tap
+        soundBtn.classList.remove('hide');
+      }
+    }
+
+    // Blow-out animation
+    function blowOut(){
+      if(blown) return; blown = true; stopMic();
+      flame.style.transition = 'opacity .35s ease, transform .35s ease';
+      flame.style.opacity = '0';
+      flame.style.transform = 'translateX(-50%) translateY(-6px) scale(0.5)';
+      for(let i=0;i<10;i++){
+        const p = document.createElement('div');
+        p.className = 'puff';
+        p.style.left = (50 + (Math.random()*24-12)) + '%';
+        p.style.animationDelay = (i*0.07)+'s';
+        smoke.appendChild(p);
+        requestAnimationFrame(()=>{ p.style.opacity = '1'; });
+      }
+      fireConfetti(130);
+      setTimeout(()=>{ showWish(); }, 1800);
+    }
+
+    function showWish(){
+      wishTitle.textContent = `Happy Birthday, ${personName}! 🎉`;
+      wishMsg.textContent = `${personName}, wishing you joy, good health, and all your dreams coming true!`;
+      show(step3);
+      fireConfetti(240);
+      startSounds();
+    }
+
+    // Sound button (for autoplay fallback)
+    soundBtn.addEventListener('click', startSounds);
+
+    enableMic.addEventListener('click', startMic);
+    manualBlow.addEventListener('click', blowOut);
+
+    // Share / copy
+    document.getElementById('shareBtn').addEventListener('click', async ()=>{
+      const base = location.href.split('#')[0];
+      const link = base + `#name=${encodeURIComponent(personName)}`;
+      try{
+        if(navigator.share){
+          await navigator.share({title:`Wish ${personName} 🎂`, text:`Send a birthday wish to ${personName}!`, url:link});
+        }else{
+          await navigator.clipboard.writeText(link);
+          alert('Link copied!');
+        }
+      }catch(e){
+        await navigator.clipboard.writeText(link);
+        alert('Link copied!');
+      }
+    });
+
+    // Replay
+    document.getElementById('replay').addEventListener('click', ()=>{
+      // stop & reset audios
+      [songEl, clapEl].forEach(a=>{ try{ a.pause(); a.currentTime = 0; }catch(e){} });
+      soundBtn.classList.add('hide');
+      blown = false; flame.style.opacity = '1'; flame.style.transform='translateX(-50%)'; smoke.innerHTML='';
+      show(step2);
+    });
+
+    // Deep-link by hash (#name=Riya)
+    (function(){
+      const m = location.hash.match(/#name=([^&]+)/);
+      if(m){ nameInput.value = decodeURIComponent(m[1]); startBtn.click(); }
+    })();
+
+    // Confetti engine (tiny)
+    const confettiCanvas = document.getElementById('confetti');
+    const ctx = confettiCanvas.getContext('2d');
+    function resize(){ confettiCanvas.width = innerWidth; confettiCanvas.height = innerHeight; }
+    addEventListener('resize', resize); resize();
+
+    let pieces = [];
+    function fireConfetti(count=150){
+      for(let i=0;i<count;i++){
+        pieces.push({ x: Math.random()*confettiCanvas.width, y: -10, s: 4+Math.random()*6, a: Math.random()*Math.PI*2, v: 2+Math.random()*4, r: Math.random()*2*Math.PI, rv: (Math.random()*0.2-0.1), shape: Math.random()<0.5?'rect':'circle' });
+      }
+    }
+    function draw(){
+      ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+      for(let i=pieces.length-1;i>=0;i--){
+        const p = pieces[i];
+        p.y += p.v; p.x += Math.sin(p.a)*1.5; p.r += p.rv;
+        if(p.y > confettiCanvas.height+20){ pieces.splice(i,1); continue; }
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r);
+        if(p.shape==='rect'){ ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s); }
+        else{ ctx.beginPath(); ctx.arc(0,0,p.s/2,0,Math.PI*2); ctx.fill(); }
+        ctx.restore();
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+  </script>
+</body>
+</html>
